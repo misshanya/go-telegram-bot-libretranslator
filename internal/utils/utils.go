@@ -36,5 +36,6 @@ func Translate(text string, langFrom string, langTo string) string {
 }
 
 func IsAutoDetect(uid int) bool {
+	// todo: realize functional to check user's config
 	return true
 }
