@@ -34,3 +34,7 @@ func Translate(text string, langFrom string, langTo string) string {
 	translatedText := result["translatedText"]
 	return translatedText
 }
+
+func IsAutoDetect(uid int) bool {
+	return true
+}
