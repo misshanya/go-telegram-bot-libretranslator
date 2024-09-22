@@ -49,7 +49,6 @@ func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 }
 
 func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
-
 	textToTranslate := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/translate"))
 
 	translatedText := translate(textToTranslate, "ru", "en")
