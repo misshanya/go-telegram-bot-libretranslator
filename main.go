@@ -52,10 +52,19 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 
 	textToTranslate := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/translate"))
 
+	translatedText := translate(textToTranslate, "ru", "en")
+
+	b.SendMessage(ctx, &bot.SendMessageParams{
+		ChatID: update.Message.Chat.ID,
+		Text:   translatedText,
+	})
+}
+
+func translate(text string, langFrom string, langTo string) string {
 	postBody, _ := json.Marshal(map[string]string{
-		"q":      textToTranslate,
-		"source": "ru",
-		"target": "en",
+		"q":      text,
+		"source": langFrom,
+		"target": langTo,
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	resp, err := http.Post(LibreTranslateUrl+"/translate", "application/json", responseBody)
@@ -75,9 +84,5 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	}
 
 	translatedText := result["translatedText"]
-
-	b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID: update.Message.Chat.ID,
-		Text:   translatedText,
-	})
+	return translatedText
 }
