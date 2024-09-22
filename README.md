@@ -1,6 +1,6 @@
 **Telegram-бот переводчик**
 ========================
-Основан на LibreTranslate. 
+Основан на [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate). 
 
 Использован фреймворк [Golang Telegram Bot](https://github.com/go-telegram/bot).
 
