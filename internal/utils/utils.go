@@ -17,9 +17,9 @@ func Translate(text string, langFrom string, langTo string) string {
 		"source": langFrom,
 		"target": langTo,
 	})
-	responseBody := bytes.NewBuffer(postBody)
+	requestBody := bytes.NewBuffer(postBody)
 	url := fmt.Sprintf("%v/translate", config.GetConfig().LibreTranslateUrl)
-	resp, err := http.Post(url, "application/json", responseBody)
+	resp, err := http.Post(url, "application/json", requestBody)
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
 	}
