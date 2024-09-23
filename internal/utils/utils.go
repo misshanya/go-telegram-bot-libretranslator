@@ -3,9 +3,12 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/misshanya/go-telegram-bot-libretranslator/internal/config"
 )
 
 func Translate(text string, langFrom string, langTo string) string {
@@ -15,7 +18,8 @@ func Translate(text string, langFrom string, langTo string) string {
 		"target": langTo,
 	})
 	responseBody := bytes.NewBuffer(postBody)
-	resp, err := http.Post("http://127.0.0.1:8000/translate", "application/json", responseBody)
+	url := fmt.Sprintf("%v/translate", config.GetConfig().LibreTranslateUrl)
+	resp, err := http.Post(url, "application/json", responseBody)
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
 	}
