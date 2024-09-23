@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	//"log"
 	"os"
 	"os/signal"
 
@@ -12,10 +12,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	cfg := config.GetConfig()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()

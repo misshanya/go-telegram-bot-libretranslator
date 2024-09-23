@@ -1,8 +1,10 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+	"sync"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -10,14 +12,25 @@ type Config struct {
 	LibreTranslateUrl string
 }
 
-func LoadConfig() (Config, error) {
+var (
+	config *Config
+	once   sync.Once
+)
+
+func loadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		return Config{}, err
+		config = &Config{}
+		return
 	}
 
-	return Config{
+	config = &Config{
 		TelegramToken:     os.Getenv("BOT_TOKEN"),
 		LibreTranslateUrl: os.Getenv("LIBRETRANSLATE_URL"),
-	}, nil
+	}
+}
+
+func GetConfig() *Config {
+	once.Do(loadConfig)
+	return config
 }
