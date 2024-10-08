@@ -17,6 +17,7 @@ func main() {
 	flag.Parse()
 
 	cfg := config.GetConfig()
+	_ = config.GetDB()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
