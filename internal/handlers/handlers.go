@@ -16,6 +16,7 @@ func RegisterHandlers(b *bot.Bot) {
 }
 
 func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	_ = utils.RegisterUser(ctx, update.Message.From.ID)
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID:      update.Message.Chat.ID,
 		Text:        "Привет! Я бот-переводчик. Написан на Go. Для перевода используется API LibreTranslate",
