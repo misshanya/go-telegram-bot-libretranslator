@@ -3,6 +3,7 @@ package inline
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
@@ -10,19 +11,30 @@ import (
 	"github.com/misshanya/go-telegram-bot-libretranslator/internal/utils"
 )
 
-func InitInlineKeyboard(b *bot.Bot) *inline.Keyboard {
+func InitInlineKeyboard(ctx context.Context, b *bot.Bot, update *models.Update) *inline.Keyboard {
 	kb := inline.New(b, inline.NoDeleteAfterClick()).
 		Row().
-		Button(fmt.Sprintf("Автоопределение языка: %v", utils.IsAutoDetect(1)), []byte("lang-autodetect"), onInlineKeyboardSelect)
+		Button(fmt.Sprintf("Автоопределение языка: %v", utils.IsAutoDetect(ctx, update.Message.From.ID)), []byte("lang-autodetect"), onInlineKeyboardSelect)
 
 	return kb
 }
 
 func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeInaccessibleMessage, data []byte) {
 	if string(data) == "lang-autodetect" {
-		b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: mes.Message.Chat.ID,
-			Text:   "Нажато " + string(data),
+		utils.ChangeAutoDetect(ctx, mes.Message.Chat.ID)
+
+		newText := fmt.Sprintf("Автоопределение языка: %v", utils.IsAutoDetect(ctx, mes.Message.Chat.ID))
+		newKb := inline.New(b, inline.NoDeleteAfterClick()).
+			Row().
+			Button(newText, []byte("lang-autodetect"), onInlineKeyboardSelect)
+
+		_, err := b.EditMessageReplyMarkup(ctx, &bot.EditMessageReplyMarkupParams{
+			ChatID:      mes.Message.Chat.ID,
+			MessageID:   mes.Message.ID,
+			ReplyMarkup: newKb,
 		})
+		if err != nil {
+			log.Println("Error when updating keyboard:", err)
+		}
 	}
 }

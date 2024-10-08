@@ -26,6 +26,6 @@ func onReplyKeyboardMenu(ctx context.Context, b *bot.Bot, update *models.Update)
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID:      update.Message.Chat.ID,
 		Text:        "Меню",
-		ReplyMarkup: inline.InitInlineKeyboard(b),
+		ReplyMarkup: inline.InitInlineKeyboard(ctx, b, update),
 	})
 }
