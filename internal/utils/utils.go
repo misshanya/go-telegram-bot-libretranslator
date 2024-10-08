@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -53,7 +54,29 @@ func Translate(text string, langFrom string, langTo string) string {
 	return translatedText
 }
 
-func IsAutoDetect(uid int) bool {
-	// todo: realize functional to check user's config
-	return true
+func IsAutoDetect(ctx context.Context, uid int64) bool {
+	queries := config.GetDB()
+	user, err := queries.GetUser(ctx, uid)
+	if err != nil {
+		return false
+	}
+	return user.LangAutodetect
+}
+
+func ChangeAutoDetect(ctx context.Context, uid int64) {
+	queries := config.GetDB()
+	_, err := queries.ChangeLangAutodetect(ctx, uid)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func RegisterUser(ctx context.Context, uid int64) bool {
+	queries := config.GetDB()
+	_, err := queries.GetUser(ctx, uid)
+	if err == nil {
+		return false
+	}
+	_, err = queries.CreateUser(ctx, uid)
+	return err != nil
 }
