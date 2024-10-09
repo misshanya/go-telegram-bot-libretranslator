@@ -11,7 +11,6 @@ import (
 
 func InitReplyKeyboard(b *bot.Bot) *reply.ReplyKeyboard {
 	demoReplyKeyboard := reply.New(
-		b,
 		reply.WithPrefix("reply_keyboard"),
 		reply.IsSelective(),
 		reply.ResizableKeyboard(),
