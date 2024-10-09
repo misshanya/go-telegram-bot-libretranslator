@@ -14,7 +14,7 @@ import (
 func InitInlineKeyboard(ctx context.Context, b *bot.Bot, update *models.Update) *inline.Keyboard {
 	kb := inline.New(b, inline.NoDeleteAfterClick()).
 		Row().
-		Button(fmt.Sprintf("Автоопределение языка: %v", utils.IsAutoDetect(ctx, update.Message.From.ID)), []byte("lang-autodetect"), onInlineKeyboardSelect)
+		Button(fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, update.Message.From.ID)), []byte("lang-autodetect"), onInlineKeyboardSelect)
 
 	return kb
 }
@@ -23,7 +23,7 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 	if string(data) == "lang-autodetect" {
 		utils.ChangeAutoDetect(ctx, mes.Message.Chat.ID)
 
-		newText := fmt.Sprintf("Автоопределение языка: %v", utils.IsAutoDetect(ctx, mes.Message.Chat.ID))
+		newText := fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, mes.Message.Chat.ID))
 		newKb := inline.New(b, inline.NoDeleteAfterClick()).
 			Row().
 			Button(newText, []byte("lang-autodetect"), onInlineKeyboardSelect)
@@ -37,4 +37,14 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 			log.Println("Error when updating keyboard:", err)
 		}
 	}
+}
+
+func getAutoDetectChar(ctx context.Context, uid int64) string {
+	var autoDetectChar string
+	if utils.IsAutoDetect(ctx, uid) {
+		autoDetectChar = "✅"
+	} else {
+		autoDetectChar = "❎"
+	}
+	return autoDetectChar
 }
