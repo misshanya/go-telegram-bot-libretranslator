@@ -27,6 +27,8 @@ var (
 	onceDB  sync.Once
 )
 
+// loadConfig loads environment variables from a .env file and initializes the config.
+// If loading fails, it initializes an empty Config.
 func loadConfig() {
 	err := godotenv.Load()
 	if err != nil {
@@ -40,6 +42,8 @@ func loadConfig() {
 	}
 }
 
+// initDB initializes the database connection and creates the users table if it doesn't exist.
+// It logs a fatal error if the connection or table creation fails.
 func initDB() {
 	var err error
 	ctx := context.Background()
@@ -53,11 +57,13 @@ func initDB() {
 	queries = users.New(dbConn)
 }
 
+// GetConfig returns the application configuration, loading it only once.
 func GetConfig() *Config {
 	onceCfg.Do(loadConfig)
 	return config
 }
 
+// GetDB returns the database queries instance, initializing the database only once.
 func GetDB() *users.Queries {
 	onceDB.Do(initDB)
 	return queries

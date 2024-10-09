@@ -17,6 +17,9 @@ type LanguageDetection struct {
 	Language   string  `json:"language"`
 }
 
+// postRequest sends a POST request to the specified URL with the given data
+// serialized as JSON and returns the response body as a byte slice.
+// It returns an error if any step of the process fails.
 func postRequest(url string, data interface{}) ([]byte, error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
@@ -37,6 +40,8 @@ func postRequest(url string, data interface{}) ([]byte, error) {
 	return body, nil
 }
 
+// Translate sends a request to the LibreTranslate API to translate the given text
+// from the source language to the target language and returns the translated text.
 func Translate(text string, langFrom string, langTo string) string {
 	postBody := map[string]string{
 		"q":      text,
@@ -59,6 +64,8 @@ func Translate(text string, langFrom string, langTo string) string {
 	return translatedText
 }
 
+// DetectLanguage sends a request to the LibreTranslate API to detect the language of the given text
+// and returns the detected language as a string. If an error occurs, it logs the error.
 func DetectLanguage(text string) string {
 	postBody := map[string]string{
 		"q": text,
@@ -79,6 +86,8 @@ func DetectLanguage(text string) string {
 	return detectedLang
 }
 
+// IsAutoDetect checks if the user's language autodetect feature is enabled.
+// It returns true if enabled, false otherwise.
 func IsAutoDetect(ctx context.Context, uid int64) bool {
 	queries := config.GetDB()
 	user, err := queries.GetUser(ctx, uid)
@@ -88,6 +97,8 @@ func IsAutoDetect(ctx context.Context, uid int64) bool {
 	return user.LangAutodetect
 }
 
+// ChangeAutoDetect toggles the language autodetect feature for the user with the given UID.
+// It logs an error if the operation fails.
 func ChangeAutoDetect(ctx context.Context, uid int64) {
 	queries := config.GetDB()
 	_, err := queries.ChangeLangAutodetect(ctx, uid)
@@ -96,6 +107,8 @@ func ChangeAutoDetect(ctx context.Context, uid int64) {
 	}
 }
 
+// RegisterUser attempts to register a new user with the given UID.
+// It returns true if the user was successfully registered, or false if the user already exists.
 func RegisterUser(ctx context.Context, uid int64) bool {
 	queries := config.GetDB()
 	_, err := queries.GetUser(ctx, uid)
