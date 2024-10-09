@@ -12,6 +12,11 @@ import (
 	"github.com/misshanya/go-telegram-bot-libretranslator/internal/config"
 )
 
+type LanguageDetection struct {
+	Confidence float64 `json:"confidence"`
+	Language   string  `json:"language"`
+}
+
 func postRequest(url string, data interface{}) ([]byte, error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
@@ -52,6 +57,26 @@ func Translate(text string, langFrom string, langTo string) string {
 
 	translatedText := result["translatedText"]
 	return translatedText
+}
+
+func DetectLanguage(text string) string {
+	postBody := map[string]string{
+		"q": text,
+	}
+	url := fmt.Sprintf("%v/detect", config.GetConfig().LibreTranslateUrl)
+	body, err := postRequest(url, postBody)
+	if err != nil {
+		log.Println("Error when requesting detect:", err)
+	}
+
+	var result []LanguageDetection
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		log.Println("Error when unmarshaling detectlang response:", err)
+	}
+
+	detectedLang := result[0].Language
+	return detectedLang
 }
 
 func IsAutoDetect(ctx context.Context, uid int64) bool {

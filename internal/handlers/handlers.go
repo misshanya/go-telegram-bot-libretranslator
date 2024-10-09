@@ -27,7 +27,20 @@ func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	textToTranslate := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/translate"))
 
-	translatedText := utils.Translate(textToTranslate, "ru", "en")
+	langFrom := "ru"
+	var langTo string
+
+	if utils.IsAutoDetect(ctx, update.Message.From.ID) {
+		langFrom = utils.DetectLanguage(textToTranslate)
+	}
+
+	if langFrom == "ru" {
+		langTo = "en"
+	} else {
+		langTo = "ru"
+	}
+
+	translatedText := utils.Translate(textToTranslate, langFrom, langTo)
 
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
