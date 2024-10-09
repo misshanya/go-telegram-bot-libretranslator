@@ -51,13 +51,13 @@ func Translate(text string, langFrom string, langTo string) string {
 	url := fmt.Sprintf("%v/translate", config.GetConfig().LibreTranslateUrl)
 	body, err := postRequest(url, postBody)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println("Error when requesting translate:", err)
 	}
 
 	var result map[string]string
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println("Error when unmarshaling translate response:", err)
 	}
 
 	translatedText := result["translatedText"]
