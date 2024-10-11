@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"strings"
 
 	"github.com/go-telegram/bot"
@@ -29,9 +30,18 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 
 	langFrom := "ru"
 	var langTo string
+	var err error
 
 	if utils.IsAutoDetect(ctx, update.Message.From.ID) {
-		langFrom = utils.DetectLanguage(textToTranslate)
+		langFrom, err = utils.DetectLanguage(textToTranslate)
+		if err != nil {
+			log.Println(err)
+			b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: update.Message.Chat.ID,
+				Text:   "Возникла ошибка при определении языка",
+			})
+			return
+		}
 	}
 
 	if langFrom == "ru" {
@@ -40,7 +50,15 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		langTo = "ru"
 	}
 
-	translatedText := utils.Translate(textToTranslate, langFrom, langTo)
+	translatedText, err := utils.Translate(textToTranslate, langFrom, langTo)
+	if err != nil {
+		log.Println(err)
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.Message.Chat.ID,
+			Text:   "Возникла ошибка при переводе текста",
+		})
+		return
+	}
 
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,

@@ -42,7 +42,7 @@ func postRequest(url string, data interface{}) ([]byte, error) {
 
 // Translate sends a request to the LibreTranslate API to translate the given text
 // from the source language to the target language and returns the translated text.
-func Translate(text string, langFrom string, langTo string) string {
+func Translate(text string, langFrom string, langTo string) (string, error) {
 	postBody := map[string]string{
 		"q":      text,
 		"source": langFrom,
@@ -51,39 +51,39 @@ func Translate(text string, langFrom string, langTo string) string {
 	url := fmt.Sprintf("%v/translate", config.GetConfig().LibreTranslateUrl)
 	body, err := postRequest(url, postBody)
 	if err != nil {
-		log.Println("Error when requesting translate:", err)
+		return "", err
 	}
 
 	var result map[string]string
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		log.Println("Error when unmarshaling translate response:", err)
+		return "", err
 	}
 
 	translatedText := result["translatedText"]
-	return translatedText
+	return translatedText, nil
 }
 
 // DetectLanguage sends a request to the LibreTranslate API to detect the language of the given text
-// and returns the detected language as a string. If an error occurs, it logs the error.
-func DetectLanguage(text string) string {
+// and returns the detected language as a string.
+func DetectLanguage(text string) (string, error) {
 	postBody := map[string]string{
 		"q": text,
 	}
 	url := fmt.Sprintf("%v/detect", config.GetConfig().LibreTranslateUrl)
 	body, err := postRequest(url, postBody)
 	if err != nil {
-		log.Println("Error when requesting detect:", err)
+		return "", err
 	}
 
 	var result []LanguageDetection
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		log.Println("Error when unmarshaling detectlang response:", err)
+		return "", err
 	}
 
 	detectedLang := result[0].Language
-	return detectedLang
+	return detectedLang, nil
 }
 
 // IsAutoDetect checks if the user's language autodetect feature is enabled.
