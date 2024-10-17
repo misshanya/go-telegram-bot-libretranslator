@@ -4,6 +4,8 @@ github.com/go-telegram/bot v1.8.3 h1:qywnDX+dKAzelJqij8eqlsUbw8SaCAE86GA6bMqGxCM
 github.com/go-telegram/bot v1.8.3/go.mod h1:i2TRs7fXWIeaceF3z7KzsMt/he0TwkVC680mvdTFYeM=
 github.com/go-telegram/bot v1.8.4 h1:7viEUESakK29aiCumq6ui5jTPqJLLDeFubTsQzE07Kg=
 github.com/go-telegram/bot v1.8.4/go.mod h1:i2TRs7fXWIeaceF3z7KzsMt/he0TwkVC680mvdTFYeM=
+github.com/go-telegram/bot v1.9.0 h1:z9g0Fgk9B7G/xoVMqji30hpJPlr3Dz3aVW2nzSGfPuI=
+github.com/go-telegram/bot v1.9.0/go.mod h1:i2TRs7fXWIeaceF3z7KzsMt/he0TwkVC680mvdTFYeM=
 github.com/go-telegram/ui v0.3.2 h1:KaSSYSz3Czs/yebwkkv5OOLnq7KwvL4q0uod20R4fC0=
 github.com/go-telegram/ui v0.3.2/go.mod h1:QbZbHcP+Ge9T/vypsmkAzedtzLO1sobK4zEACDgRwJA=
 github.com/go-telegram/ui v0.4.0 h1:j2L0QM+x7NkWOUlKu++OGkFDnuaiDvEU6wMpayUG7Tc=
