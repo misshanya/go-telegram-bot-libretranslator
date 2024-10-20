@@ -30,16 +30,24 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 }
 
 func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) *inline.Keyboard {
-	autoDetectText := fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, uid))
+	autoDetectChar, autoDetect := getAutoDetectChar(ctx, uid)
+	autoDetectText := fmt.Sprintf("Автоопределение языка: %v", autoDetectChar)
 	langFromText := fmt.Sprintf("Переводить с: %v", "язык")
 	langToText := fmt.Sprintf("Переводить на: %v", "язык")
 
-	return inline.New(b, inline.NoDeleteAfterClick()).
+	// Basic keyboard
+	kb := inline.New(b, inline.NoDeleteAfterClick()).
 		Row().
-		Button(autoDetectText, []byte("lang-autodetect"), onInlineKeyboardSelect).
-		Row().
-		Button(langFromText, []byte("lang-from"), onInlineKeyboardSelect).
-		Button(langToText, []byte("lang-to"), onInlineKeyboardSelect)
+		Button(autoDetectText, []byte("lang-autodetect"), onInlineKeyboardSelect)
+
+	// Add language options if autodetect is false
+	if !autoDetect {
+		kb = kb.Row().
+			Button(langFromText, []byte("lang-from"), onInlineKeyboardSelect).
+			Button(langToText, []byte("lang-to"), onInlineKeyboardSelect)
+	}
+
+	return kb
 }
 
 func updateKeyboard(ctx context.Context, b *bot.Bot, mes *models.MaybeInaccessibleMessage) {
@@ -55,12 +63,13 @@ func updateKeyboard(ctx context.Context, b *bot.Bot, mes *models.MaybeInaccessib
 	}
 }
 
-func getAutoDetectChar(ctx context.Context, uid int64) string {
+func getAutoDetectChar(ctx context.Context, uid int64) (string, bool) {
 	var autoDetectChar string
-	if utils.IsAutoDetect(ctx, uid) {
+	autoDetect := utils.IsAutoDetect(ctx, uid)
+	if autoDetect {
 		autoDetectChar = "✅"
 	} else {
 		autoDetectChar = "❎"
 	}
-	return autoDetectChar
+	return autoDetectChar, autoDetect
 }
