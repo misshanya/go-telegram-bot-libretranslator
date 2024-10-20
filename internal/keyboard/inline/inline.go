@@ -20,15 +20,26 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 	case "lang-autodetect":
 		utils.ChangeAutoDetect(ctx, mes.Message.Chat.ID)
 		updateKeyboard(ctx, b, &mes)
+
+	case "lang-from":
+		// TODO: lang-from callback handling
+
+	case "lang-to":
+		// TODO: lang-to callback handling
 	}
 }
 
 func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) *inline.Keyboard {
 	autoDetectText := fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, uid))
+	langFromText := fmt.Sprintf("Переводить с: %v", "язык")
+	langToText := fmt.Sprintf("Переводить на: %v", "язык")
 
 	return inline.New(b, inline.NoDeleteAfterClick()).
 		Row().
-		Button(autoDetectText, []byte("lang-autodetect"), onInlineKeyboardSelect)
+		Button(autoDetectText, []byte("lang-autodetect"), onInlineKeyboardSelect).
+		Row().
+		Button(langFromText, []byte("lang-from"), onInlineKeyboardSelect).
+		Button(langToText, []byte("lang-to"), onInlineKeyboardSelect)
 }
 
 func updateKeyboard(ctx context.Context, b *bot.Bot, mes *models.MaybeInaccessibleMessage) {
