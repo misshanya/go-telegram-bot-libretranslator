@@ -12,30 +12,35 @@ import (
 )
 
 func InitInlineKeyboard(ctx context.Context, b *bot.Bot, update *models.Update) *inline.Keyboard {
-	kb := inline.New(b, inline.NoDeleteAfterClick()).
-		Row().
-		Button(fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, update.Message.From.ID)), []byte("lang-autodetect"), onInlineKeyboardSelect)
-
-	return kb
+	return createKeyboard(ctx, b, update.Message.From.ID)
 }
 
 func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeInaccessibleMessage, data []byte) {
-	if string(data) == "lang-autodetect" {
+	switch string(data) {
+	case "lang-autodetect":
 		utils.ChangeAutoDetect(ctx, mes.Message.Chat.ID)
+		updateKeyboard(ctx, b, &mes)
+	}
+}
 
-		newText := fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, mes.Message.Chat.ID))
-		newKb := inline.New(b, inline.NoDeleteAfterClick()).
-			Row().
-			Button(newText, []byte("lang-autodetect"), onInlineKeyboardSelect)
+func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) *inline.Keyboard {
+	autoDetectText := fmt.Sprintf("Автоопределение языка: %v", getAutoDetectChar(ctx, uid))
 
-		_, err := b.EditMessageReplyMarkup(ctx, &bot.EditMessageReplyMarkupParams{
-			ChatID:      mes.Message.Chat.ID,
-			MessageID:   mes.Message.ID,
-			ReplyMarkup: newKb,
-		})
-		if err != nil {
-			log.Println("Error when updating keyboard:", err)
-		}
+	return inline.New(b, inline.NoDeleteAfterClick()).
+		Row().
+		Button(autoDetectText, []byte("lang-autodetect"), onInlineKeyboardSelect)
+}
+
+func updateKeyboard(ctx context.Context, b *bot.Bot, mes *models.MaybeInaccessibleMessage) {
+	newKb := createKeyboard(ctx, b, mes.Message.Chat.ID)
+
+	_, err := b.EditMessageReplyMarkup(ctx, &bot.EditMessageReplyMarkupParams{
+		ChatID:      mes.Message.Chat.ID,
+		MessageID:   mes.Message.ID,
+		ReplyMarkup: newKb,
+	})
+	if err != nil {
+		log.Println("Error when updating keyboard:", err)
 	}
 }
 
