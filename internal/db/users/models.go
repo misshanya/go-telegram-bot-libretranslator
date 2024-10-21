@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID             interface{}
+	ID             int64
 	TgID           int64
 	LangAutodetect bool
 	RegisteredAt   sql.NullTime
