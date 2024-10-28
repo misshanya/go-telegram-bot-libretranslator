@@ -13,4 +13,6 @@ type User struct {
 	TgID           int64
 	LangAutodetect bool
 	RegisteredAt   sql.NullTime
+	SourceLang     string
+	TargetLang     string
 }

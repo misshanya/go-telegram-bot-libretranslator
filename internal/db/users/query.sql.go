@@ -13,7 +13,7 @@ const changeLangAutodetect = `-- name: ChangeLangAutodetect :one
 UPDATE user
 SET lang_autodetect = NOT lang_autodetect
 WHERE tg_id = ?
-RETURNING id, tg_id, lang_autodetect, registered_at
+RETURNING id, tg_id, lang_autodetect, registered_at, source_lang, target_lang
 `
 
 func (q *Queries) ChangeLangAutodetect(ctx context.Context, tgID int64) (User, error) {
@@ -24,6 +24,8 @@ func (q *Queries) ChangeLangAutodetect(ctx context.Context, tgID int64) (User, e
 		&i.TgID,
 		&i.LangAutodetect,
 		&i.RegisteredAt,
+		&i.SourceLang,
+		&i.TargetLang,
 	)
 	return i, err
 }
@@ -34,7 +36,7 @@ INSERT INTO user (
 ) VALUES (
     ?
 )
-RETURNING id, tg_id, lang_autodetect, registered_at
+RETURNING id, tg_id, lang_autodetect, registered_at, source_lang, target_lang
 `
 
 func (q *Queries) CreateUser(ctx context.Context, tgID int64) (User, error) {
@@ -45,12 +47,38 @@ func (q *Queries) CreateUser(ctx context.Context, tgID int64) (User, error) {
 		&i.TgID,
 		&i.LangAutodetect,
 		&i.RegisteredAt,
+		&i.SourceLang,
+		&i.TargetLang,
 	)
 	return i, err
 }
 
+const getSourceLang = `-- name: GetSourceLang :one
+SELECT source_lang FROM user
+WHERE tg_id = ? LIMIT 1
+`
+
+func (q *Queries) GetSourceLang(ctx context.Context, tgID int64) (string, error) {
+	row := q.db.QueryRowContext(ctx, getSourceLang, tgID)
+	var source_lang string
+	err := row.Scan(&source_lang)
+	return source_lang, err
+}
+
+const getTargetLang = `-- name: GetTargetLang :one
+SELECT target_lang FROM user
+WHERE tg_id = ? LIMIT 1
+`
+
+func (q *Queries) GetTargetLang(ctx context.Context, tgID int64) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTargetLang, tgID)
+	var target_lang string
+	err := row.Scan(&target_lang)
+	return target_lang, err
+}
+
 const getUser = `-- name: GetUser :one
-SELECT id, tg_id, lang_autodetect, registered_at FROM user
+SELECT id, tg_id, lang_autodetect, registered_at, source_lang, target_lang FROM user
 WHERE tg_id = ? LIMIT 1
 `
 
@@ -62,6 +90,40 @@ func (q *Queries) GetUser(ctx context.Context, tgID int64) (User, error) {
 		&i.TgID,
 		&i.LangAutodetect,
 		&i.RegisteredAt,
+		&i.SourceLang,
+		&i.TargetLang,
 	)
 	return i, err
+}
+
+const setSourceLang = `-- name: SetSourceLang :exec
+UPDATE user
+SET source_lang = ?
+WHERE tg_id = ?
+`
+
+type SetSourceLangParams struct {
+	SourceLang string
+	TgID       int64
+}
+
+func (q *Queries) SetSourceLang(ctx context.Context, arg SetSourceLangParams) error {
+	_, err := q.db.ExecContext(ctx, setSourceLang, arg.SourceLang, arg.TgID)
+	return err
+}
+
+const setTargetLang = `-- name: SetTargetLang :exec
+UPDATE user
+SET target_lang = ?
+WHERE tg_id = ?
+`
+
+type SetTargetLangParams struct {
+	TargetLang string
+	TgID       int64
+}
+
+func (q *Queries) SetTargetLang(ctx context.Context, arg SetTargetLangParams) error {
+	_, err := q.db.ExecContext(ctx, setTargetLang, arg.TargetLang, arg.TgID)
+	return err
 }
