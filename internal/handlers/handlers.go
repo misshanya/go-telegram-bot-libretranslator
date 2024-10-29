@@ -28,7 +28,7 @@ func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	textToTranslate := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/translate"))
 
-	var sourceLang string = "ru"
+	var sourceLang string
 	var targetLang string
 	var err error
 
@@ -42,12 +42,28 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 			})
 			return
 		}
-	}
-
-	if sourceLang == "ru" {
-		targetLang = "en"
+		if sourceLang == "ru" {
+			targetLang = "en"
+		} else {
+			targetLang = "ru"
+		}
 	} else {
-		targetLang = "ru"
+		sourceLang, err = utils.GetSourceLang(ctx, update.Message.From.ID)
+		if err != nil {
+			log.Println(err)
+			b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: update.Message.Chat.ID,
+				Text:   "Возникла ошибка при получении языка оригинала",
+			})
+		}
+		targetLang, err = utils.GetTargetLang(ctx, update.Message.From.ID)
+		if err != nil {
+			log.Println(err)
+			b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: update.Message.Chat.ID,
+				Text:   "Возникла ошибка при получении языка перевода",
+			})
+		}
 	}
 
 	translatedText, err := utils.Translate(textToTranslate, sourceLang, targetLang)
