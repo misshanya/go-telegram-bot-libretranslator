@@ -28,12 +28,12 @@ func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	textToTranslate := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/translate"))
 
-	langFrom := "ru"
-	var langTo string
+	var sourceLang string = "ru"
+	var targetLang string
 	var err error
 
 	if utils.IsAutoDetect(ctx, update.Message.From.ID) {
-		langFrom, err = utils.DetectLanguage(textToTranslate)
+		sourceLang, err = utils.DetectLanguage(textToTranslate)
 		if err != nil {
 			log.Println(err)
 			b.SendMessage(ctx, &bot.SendMessageParams{
@@ -44,13 +44,13 @@ func translateHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		}
 	}
 
-	if langFrom == "ru" {
-		langTo = "en"
+	if sourceLang == "ru" {
+		targetLang = "en"
 	} else {
-		langTo = "ru"
+		targetLang = "ru"
 	}
 
-	translatedText, err := utils.Translate(textToTranslate, langFrom, langTo)
+	translatedText, err := utils.Translate(textToTranslate, sourceLang, targetLang)
 	if err != nil {
 		log.Println(err)
 		b.SendMessage(ctx, &bot.SendMessageParams{
