@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/misshanya/go-telegram-bot-libretranslator/internal/config"
+	"github.com/misshanya/go-telegram-bot-libretranslator/internal/db/users"
 )
 
 type LanguageDetection struct {
@@ -117,4 +118,54 @@ func RegisterUser(ctx context.Context, uid int64) bool {
 	}
 	_, err = queries.CreateUser(ctx, uid)
 	return err != nil
+}
+
+func GetSourceLang(ctx context.Context, uid int64) (string, error) {
+	queries := config.GetDB()
+	sourceLang, err := queries.GetSourceLang(ctx, uid)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return sourceLang, nil
+}
+
+func GetTargetLang(ctx context.Context, uid int64) (string, error) {
+	queries := config.GetDB()
+	sourceLang, err := queries.GetTargetLang(ctx, uid)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return sourceLang, nil
+}
+
+func SetSourceLang(ctx context.Context, uid int64, newSourceLang string) error {
+	queries := config.GetDB()
+	err := queries.SetSourceLang(ctx, users.SetSourceLangParams{
+		SourceLang: newSourceLang,
+		TgID:       uid,
+	},
+	)
+	return err
+}
+
+func SetTargetLang(ctx context.Context, uid int64, newTargetLang string) error {
+	queries := config.GetDB()
+	err := queries.SetTargetLang(ctx, users.SetTargetLangParams{
+		TargetLang: newTargetLang,
+		TgID:       uid,
+	},
+	)
+	return err
+}
+
+func GetOppositeLang(lang string) string {
+	switch lang {
+	case "ru":
+		return "en"
+	case "en":
+		return "ru"
+	}
+	return ""
 }
