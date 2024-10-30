@@ -120,6 +120,7 @@ func RegisterUser(ctx context.Context, uid int64) bool {
 	return err != nil
 }
 
+// GetSourceLang returns the user's source language setting from the database
 func GetSourceLang(ctx context.Context, uid int64) (string, error) {
 	queries := config.GetDB()
 	sourceLang, err := queries.GetSourceLang(ctx, uid)
@@ -130,6 +131,7 @@ func GetSourceLang(ctx context.Context, uid int64) (string, error) {
 	return sourceLang, nil
 }
 
+// GetTargetLang returns the user's target language setting from the database
 func GetTargetLang(ctx context.Context, uid int64) (string, error) {
 	queries := config.GetDB()
 	sourceLang, err := queries.GetTargetLang(ctx, uid)
@@ -140,6 +142,7 @@ func GetTargetLang(ctx context.Context, uid int64) (string, error) {
 	return sourceLang, nil
 }
 
+// SetSourceLang updates the user's source language setting in the database
 func SetSourceLang(ctx context.Context, uid int64, newSourceLang string) error {
 	queries := config.GetDB()
 	err := queries.SetSourceLang(ctx, users.SetSourceLangParams{
@@ -150,6 +153,7 @@ func SetSourceLang(ctx context.Context, uid int64, newSourceLang string) error {
 	return err
 }
 
+// SetTargetLang updates the user's target language setting in the database
 func SetTargetLang(ctx context.Context, uid int64, newTargetLang string) error {
 	queries := config.GetDB()
 	err := queries.SetTargetLang(ctx, users.SetTargetLangParams{
@@ -160,6 +164,7 @@ func SetTargetLang(ctx context.Context, uid int64, newTargetLang string) error {
 	return err
 }
 
+// GetOppositeLang returns the opposite language for the given language
 func GetOppositeLang(lang string) string {
 	switch lang {
 	case "ru":
