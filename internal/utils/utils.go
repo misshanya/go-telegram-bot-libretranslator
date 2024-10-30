@@ -43,11 +43,11 @@ func postRequest(url string, data interface{}) ([]byte, error) {
 
 // Translate sends a request to the LibreTranslate API to translate the given text
 // from the source language to the target language and returns the translated text.
-func Translate(text string, langFrom string, langTo string) (string, error) {
+func Translate(text string, sourceLang string, targetLang string) (string, error) {
 	postBody := map[string]string{
 		"q":      text,
-		"source": langFrom,
-		"target": langTo,
+		"source": sourceLang,
+		"target": targetLang,
 	}
 	url := fmt.Sprintf("%v/translate", config.GetConfig().LibreTranslateUrl)
 	body, err := postRequest(url, postBody)
