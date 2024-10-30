@@ -69,7 +69,7 @@ func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) (*inline.Keyboar
 	if err != nil {
 		return nil, err
 	}
-	souceLangText := fmt.Sprintf("Переводить с: %v", sourceLang)
+	sourceLangText := fmt.Sprintf("Переводить с: %v", sourceLang)
 	targetLangText := fmt.Sprintf("Переводить на: %v", targetLang)
 
 	// Basic keyboard
@@ -80,7 +80,7 @@ func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) (*inline.Keyboar
 	// Add language options if autodetect is false
 	if !autoDetect {
 		kb = kb.Row().
-			Button(souceLangText, []byte("lang-from"), onInlineKeyboardSelect).
+			Button(sourceLangText, []byte("lang-from"), onInlineKeyboardSelect).
 			Button(targetLangText, []byte("lang-to"), onInlineKeyboardSelect)
 	}
 
