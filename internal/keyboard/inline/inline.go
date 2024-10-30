@@ -26,7 +26,7 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 		utils.ChangeAutoDetect(ctx, mes.Message.Chat.ID)
 		updateKeyboard(ctx, b, &mes)
 
-	case "lang-from":
+	case "source-lang":
 		currentSourceLang, err := utils.GetSourceLang(ctx, mes.Message.Chat.ID)
 		if err != nil {
 			log.Println(err)
@@ -41,7 +41,7 @@ func onInlineKeyboardSelect(ctx context.Context, b *bot.Bot, mes models.MaybeIna
 		}
 		updateKeyboard(ctx, b, &mes)
 
-	case "lang-to":
+	case "target-lang":
 		currentTargetLang, err := utils.GetTargetLang(ctx, mes.Message.Chat.ID)
 		if err != nil {
 			log.Println(err)
@@ -80,8 +80,8 @@ func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) (*inline.Keyboar
 	// Add language options if autodetect is false
 	if !autoDetect {
 		kb = kb.Row().
-			Button(sourceLangText, []byte("lang-from"), onInlineKeyboardSelect).
-			Button(targetLangText, []byte("lang-to"), onInlineKeyboardSelect)
+			Button(sourceLangText, []byte("source-lang"), onInlineKeyboardSelect).
+			Button(targetLangText, []byte("target-lang"), onInlineKeyboardSelect)
 	}
 
 	return kb, nil
