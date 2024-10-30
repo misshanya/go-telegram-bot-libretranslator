@@ -69,8 +69,8 @@ func createKeyboard(ctx context.Context, b *bot.Bot, uid int64) (*inline.Keyboar
 	if err != nil {
 		return nil, err
 	}
-	sourceLangText := fmt.Sprintf("Переводить с: %v", sourceLang)
-	targetLangText := fmt.Sprintf("Переводить на: %v", targetLang)
+	sourceLangText := fmt.Sprintf("Переводить с: %v", getFullLangName(sourceLang))
+	targetLangText := fmt.Sprintf("Переводить на: %v", getFullLangName(targetLang))
 
 	// Basic keyboard
 	kb := inline.New(b, inline.NoDeleteAfterClick()).
@@ -113,4 +113,14 @@ func getAutoDetectChar(ctx context.Context, uid int64) (string, bool) {
 		autoDetectChar = "❎"
 	}
 	return autoDetectChar, autoDetect
+}
+
+func getFullLangName(lang string) string {
+	switch lang {
+	case "ru":
+		return "Русский"
+	case "en":
+		return "Английский"
+	}
+	return ""
 }
