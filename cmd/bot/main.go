@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"log"
 	"os"
 	"os/signal"
 
@@ -36,6 +37,8 @@ func main() {
 	}
 
 	handlers.RegisterHandlers(b)
+
+	log.Println("Starting bot")
 
 	b.Start(ctx)
 }
