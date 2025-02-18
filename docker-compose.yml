@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  bot:
+    build: .
+    environment:
+      - BOT_TOKEN=yourtoken
+      - LIBRETRANSLATE_URL=http://libretranslate:5000
+      - DB_PATH=/app/dbData/bot.db
+    volumes:
+      - ./dbData:/app/dbData:z
+    restart: unless-stopped
+    networks:
+      - bot-network
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "./venv/bin/python scripts/healthcheck.py"]
+    environment:
+      - LT_UPDATE_MODELS=true
+      - LT_LOAD_ONLY=en,ru
+    volumes:
+      - libretranslate_data:/home/libretranslate/.local:z
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  libretranslate_data:
