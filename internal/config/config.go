@@ -14,6 +14,7 @@ import (
 type Config struct {
 	TelegramToken     string
 	LibreTranslateUrl string
+	DBPath            string
 }
 
 var (
@@ -42,9 +43,15 @@ func loadConfig() {
 		log.Fatalln("missing LIBRETRANSLATE_URL env var")
 	}
 
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		log.Fatalln("missing DB_PATH env var")
+	}
+
 	config = &Config{
 		TelegramToken:     botToken,
 		LibreTranslateUrl: libreTranslateUrl,
+		DBPath:            dbPath,
 	}
 }
 
@@ -52,7 +59,7 @@ func loadConfig() {
 // It logs a fatal error if the connection or table creation fails.
 func initDB() {
 	var err error
-	dbConn, err = sql.Open("sqlite3", "./bot.db")
+	dbConn, err = sql.Open("sqlite3", GetConfig().DBPath)
 	if err != nil {
 		log.Fatalln("Failed to connect to database:", err)
 	}

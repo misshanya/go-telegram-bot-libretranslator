@@ -25,4 +25,4 @@ RUN wget -O /usr/local/bin/goose https://github.com/pressly/goose/releases/downl
 RUN chmod +x /usr/local/bin/goose
 
 # Migrate db and run bot
-CMD ["sh", "-c", "goose -dir ./migrations sqlite3 bot.db up &&./bot"]
+CMD ["sh", "-c", "goose -dir ./migrations sqlite3 $DB_PATH up &&./bot"]
