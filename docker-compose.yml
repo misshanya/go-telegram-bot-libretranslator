@@ -8,7 +8,7 @@ services:
       - LIBRETRANSLATE_URL=http://libretranslate:5000
       - DB_PATH=/app/dbData/bot.db
     volumes:
-      - ./dbData:/app/dbData:z
+      - ./dbData:/app/dbData
     restart: unless-stopped
     networks:
       - bot-network
@@ -22,7 +22,7 @@ services:
       - LT_UPDATE_MODELS=true
       - LT_LOAD_ONLY=en,ru
     volumes:
-      - libretranslate_data:/home/libretranslate/.local:z
+      - libretranslate_data:/home/libretranslate/.local
 
 networks:
   bot-network:
