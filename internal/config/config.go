@@ -29,13 +29,22 @@ var (
 func loadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		config = &Config{}
-		return
+		log.Println(".env file not found, trying to use environment variables...")
+	}
+
+	botToken := os.Getenv("BOT_TOKEN")
+	if botToken == "" {
+		log.Fatalln("missing BOT_TOKEN env var")
+	}
+
+	libreTranslateUrl := os.Getenv("LIBRETRANSLATE_URL")
+	if libreTranslateUrl == "" {
+		log.Fatalln("missing LIBRETRANSLATE_URL env var")
 	}
 
 	config = &Config{
-		TelegramToken:     os.Getenv("BOT_TOKEN"),
-		LibreTranslateUrl: os.Getenv("LIBRETRANSLATE_URL"),
+		TelegramToken:     botToken,
+		LibreTranslateUrl: libreTranslateUrl,
 	}
 }
 
