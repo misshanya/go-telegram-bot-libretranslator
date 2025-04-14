@@ -1,6 +1,7 @@
 .env
 bot.db
 /bin/
+dbData/
 
 # IDE specific
 .vscode/
