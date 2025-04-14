@@ -3,14 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
+	"github.com/misshanya/go-telegram-bot-libretranslator/internal/bot"
 	"os"
 	"os/signal"
 
-	"github.com/go-telegram/bot"
 	"github.com/misshanya/go-telegram-bot-libretranslator/internal/config"
-	"github.com/misshanya/go-telegram-bot-libretranslator/internal/handlers"
-	"github.com/misshanya/go-telegram-bot-libretranslator/internal/middlewares"
 )
 
 func main() {
@@ -23,22 +20,5 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	var opts []bot.Option
-
-	if *logEnabled {
-		opts = []bot.Option{
-			bot.WithMiddlewares(middlewares.LogMessage),
-		}
-	}
-
-	b, err := bot.New(cfg.TelegramToken, opts...)
-	if err != nil {
-		panic(err)
-	}
-
-	handlers.RegisterHandlers(b)
-
-	log.Println("Starting bot")
-
-	b.Start(ctx)
+	bot.Start(logEnabled, cfg, ctx)
 }

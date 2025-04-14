@@ -1,14 +1,13 @@
 -- name: CreateUser :one
-INSERT INTO user (
-    tg_id
-) VALUES (
-    ?
-)
+INSERT INTO user (tg_id)
+VALUES (?)
 RETURNING *;
 
 -- name: GetUser :one
-SELECT * FROM user
-WHERE tg_id = ? LIMIT 1;
+SELECT *
+FROM user
+WHERE tg_id = ?
+LIMIT 1;
 
 -- name: ChangeLangAutodetect :one
 UPDATE user
@@ -17,12 +16,16 @@ WHERE tg_id = ?
 RETURNING *;
 
 -- name: GetSourceLang :one
-SELECT source_lang FROM user
-WHERE tg_id = ? LIMIT 1;
+SELECT source_lang
+FROM user
+WHERE tg_id = ?
+LIMIT 1;
 
 -- name: GetTargetLang :one
-SELECT target_lang FROM user
-WHERE tg_id = ? LIMIT 1;
+SELECT target_lang
+FROM user
+WHERE tg_id = ?
+LIMIT 1;
 
 -- name: SetSourceLang :exec
 UPDATE user

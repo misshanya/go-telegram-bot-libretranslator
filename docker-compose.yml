@@ -17,12 +17,14 @@ services:
     image: libretranslate/libretranslate:latest
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "./venv/bin/python scripts/healthcheck.py"]
+      test: [ "CMD-SHELL", "./venv/bin/python scripts/healthcheck.py" ]
     environment:
       - LT_UPDATE_MODELS=true
       - LT_LOAD_ONLY=en,ru
     volumes:
       - libretranslate_data:/home/libretranslate/.local
+    networks:
+      - bot-network
 
 networks:
   bot-network:
