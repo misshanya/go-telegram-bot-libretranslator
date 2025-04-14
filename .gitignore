@@ -1,4 +1,7 @@
 .env
-.vscode
 bot.db
 /bin/
+
+# IDE specific
+.vscode/
+.idea/
