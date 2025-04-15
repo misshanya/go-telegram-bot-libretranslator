@@ -1,10 +1,8 @@
 services:
   bot:
     build: .
-    environment:
-      - BOT_TOKEN=yourtoken
-      - LIBRETRANSLATE_URL=http://libretranslate:5000
-      - DB_PATH=/app/dbData/bot.db
+    env_file:
+      - .env
     volumes:
       - ./dbData:/app/dbData
     restart: unless-stopped
