@@ -1,4 +1,4 @@
-FROM golang:1.23.6 as builder
+FROM golang:1.23.6 AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN go mod download
 RUN go build -o ./bot ./cmd/bot
 
 # Debian as runner
-FROM debian:stable-slim as runner
+FROM debian:stable-slim AS runner
 
 WORKDIR /app
 COPY --from=builder /app/sql/migrations/ ./migrations
